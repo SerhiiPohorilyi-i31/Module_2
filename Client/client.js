@@ -1,5 +1,6 @@
-const socket = new WebSocket('ws://localhost:3000');
+const socket = new WebSocket('ws://localhost:3000'); // Підключення до WebSocket-сервера
 const sendButton = document.getElementById('sendButton');
+const disconnectBtn = document.getElementById('disconnectBtn');
 const messageInput = document.getElementById('messageInput');
 const messagesDiv = document.getElementById('messages');
 
@@ -12,11 +13,10 @@ socket.onopen = () => {
 socket.onmessage = (event) => {
     const data = event.data;
     
-    // Якщо отримано Blob, перетворюємо його в текст і обробляємо
     if (data instanceof Blob) {
         data.text().then((text) => {
-            const parsedData = JSON.parse(text); // Парсимо JSON
-            addMessage(parsedData.text); // Додаємо повідомлення в інтерфейс
+            const parsedData = JSON.parse(text);
+            addMessage(parsedData.text);
         });
     } else {
         const parsedData = JSON.parse(data);
@@ -24,7 +24,7 @@ socket.onmessage = (event) => {
     }
 };
 
-// Функція для додавання повідомлення в інтерфейс
+// Функція для додавання повідомлення
 function addMessage(message) {
     const messageContainer = document.createElement("div");
     messageContainer.textContent = message;
@@ -36,9 +36,30 @@ sendButton.onclick = () => {
     const message = messageInput.value;
     if (message) {
         const messageObj = { text: message };
-        socket.send(JSON.stringify(messageObj)); // Відправляємо як JSON
+        socket.send(JSON.stringify(messageObj));
         messageInput.value = ''; // Очищаємо поле вводу
     }
 };
 
+// Обробка кнопки "Відключитися"
+disconnectBtn.onclick = () => {
+    fetch('http://localhost:3001/disconnect', { method: 'GET' }) // HTTP-запит на відключення
+        .then(response => {
+            if (response.ok) {
+                console.log('Відключено від сервера');
+                addMessage('Ви відключились від чату.'); // Повідомлення користувачу
+                socket.close(); // Закриття WebSocket-з'єднання
+                disableChat(); // Відключення елементів інтерфейсу
+            } else {
+                console.error('Не вдалося відключитись від сервера');
+            }
+        })
+        .catch(error => console.error('Помилка запиту:', error));
+};
 
+// Функція для відключення чату
+function disableChat() {
+    sendButton.disabled = true;
+    messageInput.disabled = true;
+    disconnectBtn.disabled = true;
+}

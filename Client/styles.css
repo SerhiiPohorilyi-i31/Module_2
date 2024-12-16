@@ -35,6 +35,21 @@ button:hover {
   background-color: #45a049;
 }
 
+#disconnectBtn {
+  background-color: #ff4d4d; /* Червоний колір */
+  color: #fff; /* Білий текст */
+  border: none; /* Прибрати рамку */
+  padding: 10px 20px; /* Внутрішній відступ */
+  font-size: 1em; /* Розмір тексту */
+  border-radius: 5px; /* Закруглені кути */
+  cursor: pointer; /* Курсор-покажчик */
+  margin: 10px 0; /* Відступи */
+}
+
+#disconnectBtn:hover {
+  background-color: #e60000; /* Темно-червоний при наведенні */
+}
+
 #messageInput {
   width: 300px;
   padding: 10px;
@@ -70,4 +85,5 @@ button:hover {
   background-color: #f7f7f7;
   font-style: italic;
 }
+
 
